@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUADRINHOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Adicione seu estilo aqui */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+        }
+
+        body {
+            background: radial-gradient(circle, rgba(20, 20, 40, 1) 0%, rgba(10, 10, 60, 1) 40%, rgba(0, 0, 0, 1) 100%),
+                radial-gradient(circle, rgba(128, 0, 128, 0.6) 0%, rgba(0, 128, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+            background-blend-mode: overlay;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            padding-top: 100px;
+            margin-bottom: 50px;
+        }
+
+        #headerCabeçalho {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #divCabeçalho {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            text-align: center;
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #divCabeçalho:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 255, 1);
+        }
+
+        .chart-container {
+            width: 80%;
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            position: relative;
+        }
+
+        .chart {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+        }
+
+        .form-container {
+            width: 80%;
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px #00ffffb3;
+            position: relative;
+            text-align: center;
+        }
+
+        .form-container h2 {
+            margin: 0 0 20px 0;
+            color: rgba(0, 255, 255, 0.8);
+        }
+
+        .form-container iframe {
+            width: 100%;
+            height: 500px;
+        }
+
+        @keyframes move {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .table-container {
+            text-align: center;
+        }
+
+        .futuristic-table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: linear-gradient(145deg, #1a1a1a, #262626);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .futuristic-table th,
+        .futuristic-table td {
+            padding: 15px;
+            text-align: left;
+            color: #ffffff;
+        }
+
+        .futuristic-table th {
+            background-color: #1e1e1e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333333;
+        }
+
+        .futuristic-table td {
+            font-size: 1rem;
+            border-bottom: 1px solid #333333;
+        }
+
+        .futuristic-table tr:hover {
+            background-color: #333333;
+        }
+
+        @media screen and (max-width: 600px) {
+
+            .futuristic-table,
+            .futuristic-table thead,
+            .futuristic-table tbody,
+            .futuristic-table th,
+            .futuristic-table td,
+            .futuristic-table tr {
+                display: block;
+                width: 100%;
+            }
+
+            .futuristic-table thead {
+                display: none;
+                /* Esconde o cabeçalho para evitar duplicação */
+            }
+
+            .futuristic-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #333333;
+                border-radius: 10px;
+                background: #1a1a1a;
+                padding: 10px;
+                /* Adiciona espaçamento ao redor do conteúdo */
+            }
+
+            .futuristic-table td {
+                padding: 10px 15px;
+                position: relative;
+                text-align: left;
+                /* Alinha o texto à esquerda */
+                border-bottom: 1px solid #333333;
+            }
+
+            .futuristic-table td:last-child {
+                border-bottom: none;
+                /* Remove a borda inferior da última célula */
+            }
+
+            .futuristic-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                text-transform: uppercase;
+                color: #ffffff;
+                /* Adiciona cor ao texto do rótulo */
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body onload="carregar();">
+    <h1>QUADRINHOS</h1>
+    <div class="chart-container">
+        <h2>TODOS</h2>
+        <div class="chart">
+            <canvas id="doughnutChart"></canvas>
+        </div>
+        <h2>VERMELHA</h2>
+        <div class="chart">
+            <canvas id="barChart"></canvas>
+        </div>
+        <h2>VERDE</h2>
+        <div class="chart">
+            <canvas id="scatterChart"></canvas>
+        </div>
+        <h2>MARROM</h2>
+        <div class="chart">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <h2>Base de dados</h2>
+        <iframe
+            src="https://docs.google.com/spreadsheets/d/18UiRitvHDcFi7TZdAlZ3xWVDe-IDhWSfu19YwoWSjvo/pubhtml?widget=true&amp;headers=false"></iframe>
+        <!--?embedded=true       adicione no final do link para suportar um google forms-->
+    </div>
+    <div class="table-container">
+        <h1>Lastro</h1>
+        <table class="futuristic-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Nome">S1 KEVIN</td>
+                    <td data-label="Quantidade">1</td>
+                    <td data-label="Observação">Missão</td>
+                </tr>
+                <tr>
+                    <td data-label="Nome">S2 WANDERLEY</td>
+                    <td data-label="Quantidade">2</td>
+                    <td data-label="Observação">Missão</td>
+                </tr>
+                <tr>
+                    <td data-label="Nome">CB ADRIANO</td>
+                    <td data-label="Quantidade">1</td>
+                    <td data-label="Observação">Licença paternidade seguido de Férias</td>
+                </tr>
+                <tr>
+                    <td data-label="Nome">S2 FABRÍCIO RABELO</td>
+                    <td data-label="Quantidade">1</td>
+                    <td data-label="Observação">Férias</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><br><br>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+
+        const doughnutChart = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['S1 KEVIN', 'CB VALVERDE', 'CB ADRIANO', 'CB NASCIMENTO', 'S2 FABRICIO RABELO', 'S2 WANDERLEY', 'CB BRAGA'],
+                datasets: [{
+                    label: 'My Dataset',
+                    data: [20, 18, 15, 20, 20, 9, 21], //<--
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(299, 199, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 199, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    animateRotate: true,
+                    animateScale: true
+                }
+            }
+        });
+
+        const barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['CB VALVERDE', 'S1 KEVIN', 'S2 WANDERLEY', 'S2 FABRÍCIO RABELO', 'CB BRAGA', 'CB NASCIMENTO', 'CB ADRIANO'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [7, 6, 2, 5, 5, 7, 4],
+                    backgroundColor: 'rgba(0, 255, 255, 0.5)',
+                    borderColor: 'rgba(0, 255, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    hoverBackgroundColor: 'rgba(0, 255, 255, 0.7)',
+                    hoverBorderColor: 'rgba(0, 255, 255, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                animation: {
+                    duration: 1000
+                }
+            }
+        });
+
+        const pieChart = new Chart(ctxScatter, {
+            type: 'pie',
+            data: {
+                labels: ['CB VALVERDE', 'S1 KEVIN', 'S2 WANDERLEY', 'S2 FABRÍCIO RABELO', 'CB BRAGA', 'CB NASCIMENTO', 'CB ADRIANO'],
+                datasets: [{
+                    label: 'Pie Dataset',
+                    data: [1, 6, 2, 1, 1, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(299, 199, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 199, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true,
+                    }
+                }
+            }
+        });
+
+        //scatterChart
+
+        const lineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['CB VALVERDE', 'S1 KEVIN', 'S2 WANDERLEY', 'S2 FABRÍCIO RABELO', 'CB BRAGA', 'CB NASCIMENTO', 'CB ADRIANO'],
+                datasets: [{
+                    label: 'Temperature',
+                    data: [4, 1, 1, 4, 2, 2, 3],
+                    backgroundColor: 'rgba(0, 255, 255, 0.2)',
+                    borderColor: 'rgba(0, 255, 255, 1)',
+                    borderWidth: 1,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000
+                }
+            }
+        });
+
+        function carregar() {
+            // Simulação de carregamento
+            setTimeout(function () {
+                document.body.style.background = 'radial-gradient(circle, rgba(10, 10, 40, 1) 0%, rgba(20, 20, 60, 1) 50%, rgba(0, 0, 0, 1) 100%)';
+            }, 3000);
+        }
+        //https://docs.google.com/spreadsheets/d/18UiRitvHDcFi7TZdAlZ3xWVDe-IDhWSfu19YwoWSjvo/pubhtml
+
+    </script>
+
+</body>
+
+</html>
